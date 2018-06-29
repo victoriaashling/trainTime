@@ -1,0 +1,11 @@
+.table th {
+    border-top: none;
+}
+
+.card {
+    margin-bottom: 2em;
+}
+
+#submit {
+    margin-top: 1em;
+}
