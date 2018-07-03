@@ -1,3 +1,5 @@
+$(document).ready(function() {
+
 var config = {
     apiKey: "AIzaSyA6tQzBR3WbFTwIc-aWSRoOz0XAlAM5cbY",
     authDomain: "train-times-homework.firebaseapp.com",
@@ -35,13 +37,8 @@ $("#submit").click(function(event) {
     
 });
 
-// function meh() {
-//     // set the page to update the train times according to new moment.js logic
-// };
-// var constantRefresh = setInterval(meh, 5000);
 
-
-database.ref().on("child_added", function(snapshot) {
+function refreshTimes(snapshot) {
     var retrievedName = snapshot.val().trainName;
     var retrievedDestination = snapshot.val().destination;
     var retrievedFirst = snapshot.val().firstTrain;
@@ -73,6 +70,29 @@ database.ref().on("child_added", function(snapshot) {
     }
 
     $("tbody").append("<tr><td>" + retrievedName + "</td><td>" + retrievedDestination + "</td><td>" + retrievedFrequency + "</td><td>" + nextArrival + "</td><td>" + minutesAway + "</td></tr>");
+};
+
+
+database.ref().on("child_added", function(snapshot) {
+    refreshTimes(snapshot);
+    console.log("first");
 }, function(errorObject) {
-  console.log("Errors handled: " + errorObject.code);
+    console.log("Errors handled: " + errorObject.code);
 });
+
+
+// This works to update the page, but it is causing some problems when new children are added that I'm not quite sure how to fix yet. Still working on that.
+setInterval(function(){
+    if (moment().second() === 0) {
+        $("tbody").empty();
+        database.ref().on("child_added", function(snapshot) {
+            refreshTimes(snapshot);
+            console.log("second");
+        }, function(errorObject) {
+            console.log("Errors handled: " + errorObject.code);
+        });
+    }
+}, 1000);
+
+
+})
