@@ -55,22 +55,22 @@ database.ref().on("child_added", function(snapshot) {
 
     if (tDiff > 0) {
         var tRemainder = tDiff % retrievedFrequency;
-        var tMinutesUntil = retrievedFrequency - tRemainder;
+        if (tRemainder === 0) {
+            minutesAway = "Now Boarding";
+            nextArrival = "Here";
+        }
+        else {
+            var tMinutesUntil = retrievedFrequency - tRemainder;
 
-        minutesAway = tMinutesUntil;
-
-        nextArrival = moment().add(minutesAway, "minutes").format("HH:mm");
-        console.log(tDiff + " " + tRemainder + " " + tMinutesUntil);
-    }
-    else if (tDiff = 0) {
-         minutesAway = "Here";
-         nextArrival = "Now Boarding";
+            minutesAway = tMinutesUntil;
+            nextArrival = moment().add(minutesAway, "minutes").format("HH:mm");
+        }
+        console.log(snapshot.val().trainName + " " + tRemainder + " " + nextArrival);
     }
     else {
         nextArrival = retrievedFirst;
         minutesAway = convertedFirst.diff(moment(), "minutes");
     }
-
 
     $("tbody").append("<tr><td>" + retrievedName + "</td><td>" + retrievedDestination + "</td><td>" + retrievedFrequency + "</td><td>" + nextArrival + "</td><td>" + minutesAway + "</td></tr>");
 }, function(errorObject) {
